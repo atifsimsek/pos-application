@@ -77,7 +77,7 @@ const Header = () => {
           />
         </div>
         <div
-          className="menu-links flex justify-between items-center gap-7 md:static fixed bottom-0 left-0 
+          className="menu-links flex justify-between items-center gap-7 md:static fixed z-10 bottom-0 left-0 
         md:w-auto w-screen md:bg-transparent bg-white md:border-t-0 border-t md:px-0 px-4 py-1"
         >
           {menuLinks.map((link, index) =>

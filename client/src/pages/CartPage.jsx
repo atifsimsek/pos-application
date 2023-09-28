@@ -1,5 +1,4 @@
 import React from "react";
-import Header from "../components/Header";
 import { Table, Card, Button } from "antd";
 import { useState } from "react";
 import CreateBill from "../components/Cart/CreateBill";
@@ -41,7 +40,6 @@ const CartPage = () => {
 
   return (
     <>
-      <Header />
       <div className="px-6">
         <Table
           dataSource={dataSource}

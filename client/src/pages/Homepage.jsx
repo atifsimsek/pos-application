@@ -1,12 +1,10 @@
 import CartTotals from "../components/Cart/CartTotals";
 import Categories from "../components/Categories";
-import Header from "../components/Header";
 import Products from "../components/Products";
 
 const Homepage = () => {
   return (
     <>
-      <Header />
       <div className="home px-6 flex flex-col md:flex-row justify-between gap-10 md:pb-0 pb-24">
         <div className="categories  overflow-auto max-h-[calc(100vh-130px)]">
           <Categories />

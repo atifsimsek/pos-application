@@ -10,10 +10,12 @@ import {
   LogoutOutlined,
 } from "@ant-design/icons";
 import useWindowWidth from "../../hooks/useWindowWitdh";
+import { Link, NavLink, useLocation } from "react-router-dom";
 
 const Header = () => {
   const [isMobile, setIsMobile] = useState(null);
   const { width } = useWindowWidth();
+  const location = useLocation();
 
   const windowWidth = useMemo(() => {
     if (width <= 768) return width;
@@ -23,34 +25,44 @@ const Header = () => {
     () => [
       {
         name: "Anasayfa",
+        to: "/",
         Icon: <HomeOutlined className="md:text-2xl text-xl" />,
       },
       {
         name: "Sepet",
+        to: "/cart",
         Icon: (
           <Badge count={5} offset={[0, 6]}>
-            <ShoppingCartOutlined className="md:text-2xl text-xl" />
+            <ShoppingCartOutlined
+              className={`${
+                location.pathname === "/cart" && "text-[#40a9ff]"
+              } hover:text-[#40a9ff] transition-all md:text-2xl text-xl `}
+            />
           </Badge>
         ),
       },
       {
         name: "Fatura",
+        to: "/bill",
         Icon: <CopyOutlined className="md:text-2xl text-xl" />,
       },
       {
         name: "Müşteri",
+        to: "/customer",
         Icon: <UserOutlined className="md:text-2xl text-xl" />,
       },
       {
         name: "İstatistikler",
+        to: "/statistics",
         Icon: <BarChartOutlined className="md:text-2xl text-xl" />,
       },
       {
         name: "Çıkış Yap",
+        to: "/logout",
         Icon: <LogoutOutlined className="md:text-2xl text-xl text-red-600 " />,
       },
     ],
-    []
+    [location.pathname]
   );
 
   useEffect(() => {
@@ -64,9 +76,9 @@ const Header = () => {
     <div className="header-wrapper border-b mb-6">
       <header className="py-4 px-6 flex justify-between items-center gap-10">
         <div className="logo">
-          <a href="/">
+          <Link to="/">
             <h2 className="uppercase text-2xl font-bold md:text-4xl ">Logo</h2>
-          </a>
+          </Link>
         </div>
         <div className="header-search flex-1 flex justify-center ">
           <Input
@@ -82,22 +94,31 @@ const Header = () => {
         >
           {menuLinks.map((link, index) =>
             isMobile === index ? null : (
-              <a
+              <NavLink
                 key={index}
-                href="/"
-                className={`menu-link flex flex-col hover:text-[#40a9ff] transition-all`}
+                to={link.to}
+                className={({ isActive }) =>
+                  ` menu-link flex flex-col hover:text-[#40a9ff] transition-all ${
+                    isActive && "text-[#40a9ff]"
+                  }`
+                }
+                //className={`()=> menu-link flex flex-col hover:text-[#40a9ff] transition-all`}
               >
                 {link.Icon}
                 <span className="md:text-[12px] text-[10px]">{link.name}</span>
-              </a>
+              </NavLink>
             )
           )}
         </div>
-        <a href="/" className="md:hidden flex">
+        <NavLink to="/cart" className="md:hidden flex">
           <Badge count={5} offset={[0, 6]}>
-            <ShoppingCartOutlined className="md:text-2xl text-xl" />
+            <ShoppingCartOutlined
+              className={`${
+                location.pathname === "/cart" && "text-[#40a9ff]"
+              } hover:text-[#40a9ff] transition-all text-2xl `}
+            />
           </Badge>
-        </a>
+        </NavLink>
       </header>
     </div>
   );

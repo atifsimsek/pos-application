@@ -35,6 +35,7 @@ const CreateBill = ({ isModalOpen, setIsModalOpen }) => {
             className="py-2"
             label="Tel No"
             name={"phoneNumber"}
+            maxLength={11}
             rules={[
               {
                 required: true,

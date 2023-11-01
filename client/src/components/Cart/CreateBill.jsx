@@ -9,7 +9,7 @@ const CreateBill = ({ isModalOpen, setIsModalOpen }) => {
   return (
     <>
       <Modal
-        title="Basic Modal"
+        title="Sipariş Oluştur"
         open={isModalOpen}
         // onOk={handleOk}
         onCancel={() => {

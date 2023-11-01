@@ -43,7 +43,7 @@ const Header = () => {
       },
       {
         name: "Fatura",
-        to: "/bill",
+        to: "/bills",
         Icon: <CopyOutlined className="md:text-2xl text-xl" />,
       },
       {

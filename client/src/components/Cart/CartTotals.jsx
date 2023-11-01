@@ -108,7 +108,7 @@ const CartTotals = () => {
     },
   ];
   return (
-    <div className="cart h-full max-h-[calc(100vh-93px)] flex flex-col">
+    <div className="cart h-full max-h-[calc(100vh-91px)] flex flex-col -mt-[2px]  ">
       <h2
         className="bg-blue-600 text-center py-4 text-white 
     font-bold tracking-wide flex flex-col"

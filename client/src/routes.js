@@ -2,6 +2,7 @@ import React, { lazy, Suspense } from "react";
 const Homepage = lazy(() => import("./pages/Homepage"));
 const CartPage = lazy(() => import("./pages/CartPage"));
 const BillPage = lazy(() => import("./pages/BillPage"));
+const CustomerPage = lazy(() => import("./pages/CustomerPage"));
 
 export const routes = [
   {
@@ -26,11 +27,21 @@ export const routes = [
   },
   {
     path: "/bills",
-    name: "Cart",
+    name: "Bill",
     exact: true,
     element: (
       <Suspense fallback={<div>Loading...</div>}>
         <BillPage />
+      </Suspense>
+    ),
+  },
+  {
+    path: "/customers",
+    name: "Customer",
+    exact: true,
+    element: (
+      <Suspense fallback={<div>Loading...</div>}>
+        <CustomerPage />
       </Suspense>
     ),
   },

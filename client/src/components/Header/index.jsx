@@ -48,7 +48,7 @@ const Header = () => {
       },
       {
         name: "Müşteri",
-        to: "/customer",
+        to: "/customers",
         Icon: <UserOutlined className="md:text-2xl text-xl" />,
       },
       {

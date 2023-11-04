@@ -48,34 +48,7 @@ const BillPage = () => {
           bordered
           pagination={false}
         />
-        <div className=" flex justify-end mt-4">
-          <Card className="w-72 ">
-            <div className="flex justify-between">
-              <span>Ara Toplam</span>
-              <span>549.00₺</span>
-            </div>
-            <div className="flex justify-between my-2">
-              <span>Kdv Toplam %8</span>
-              <span className="text-red-600">549.00₺</span>
-            </div>
-            <div className="flex justify-between">
-              <b>Toplam</b>
-              <b>549.00₺</b>
-            </div>
-            <Button
-              onClick={() => {
-                setIsModalOpen(true);
-              }}
-              className="mt-2 w-full"
-              type="primary"
-              size="large"
-            >
-              Sipariş Oluştur
-            </Button>
-          </Card>
-        </div>
       </div>
-      <PrintBill isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />
     </>
   );
 };

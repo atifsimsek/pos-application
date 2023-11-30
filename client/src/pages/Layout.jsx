@@ -7,7 +7,8 @@ const Layout = ({ children }) => {
   console.log(location.pathname);
   return (
     <>
-      {location.pathname === "/register" || location === "/login" ? null : (
+      {location.pathname === "/register" ||
+      location.pathname === "/login" ? null : (
         <Header />
       )}
       {children}

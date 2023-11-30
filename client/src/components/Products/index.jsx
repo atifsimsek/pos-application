@@ -8,6 +8,62 @@ const products = [
     image:
       "https://i.lezzet.com.tr/images-xxlarge-secondary/elma-nasil-yenir-221135ca-f383-474c-a4f5-ad02a45db978.jpg",
   },
+  {
+    id: 2,
+    name: "Elma",
+    price: 12,
+    image:
+      "https://i.lezzet.com.tr/images-xxlarge-secondary/elma-nasil-yenir-221135ca-f383-474c-a4f5-ad02a45db978.jpg",
+  },
+  {
+    id: 3,
+    name: "Elma",
+    price: 12,
+    image:
+      "https://i.lezzet.com.tr/images-xxlarge-secondary/elma-nasil-yenir-221135ca-f383-474c-a4f5-ad02a45db978.jpg",
+  },
+  {
+    id: 4,
+    name: "Elma",
+    price: 12,
+    image:
+      "https://i.lezzet.com.tr/images-xxlarge-secondary/elma-nasil-yenir-221135ca-f383-474c-a4f5-ad02a45db978.jpg",
+  },
+  {
+    id: 5,
+    name: "Elma",
+    price: 12,
+    image:
+      "https://i.lezzet.com.tr/images-xxlarge-secondary/elma-nasil-yenir-221135ca-f383-474c-a4f5-ad02a45db978.jpg",
+  },
+  {
+    id: 6,
+    name: "Elma",
+    price: 12,
+    image:
+      "https://i.lezzet.com.tr/images-xxlarge-secondary/elma-nasil-yenir-221135ca-f383-474c-a4f5-ad02a45db978.jpg",
+  },
+  {
+    id: 8,
+    name: "Elma",
+    price: 12,
+    image:
+      "https://i.lezzet.com.tr/images-xxlarge-secondary/elma-nasil-yenir-221135ca-f383-474c-a4f5-ad02a45db978.jpg",
+  },
+  {
+    id: 9,
+    name: "Elma",
+    price: 12,
+    image:
+      "https://i.lezzet.com.tr/images-xxlarge-secondary/elma-nasil-yenir-221135ca-f383-474c-a4f5-ad02a45db978.jpg",
+  },
+  {
+    id: 10,
+    name: "Elma",
+    price: 12,
+    image:
+      "https://i.lezzet.com.tr/images-xxlarge-secondary/elma-nasil-yenir-221135ca-f383-474c-a4f5-ad02a45db978.jpg",
+  },
 ];
 
 const Products = () => {

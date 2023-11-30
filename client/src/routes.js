@@ -5,6 +5,7 @@ const BillPage = lazy(() => import("./pages/BillPage"));
 const CustomerPage = lazy(() => import("./pages/CustomerPage"));
 const Statistics = lazy(() => import("./pages/Statistics"));
 const Register = lazy(() => import("./pages/auth/Register"));
+const Login = lazy(() => import("./pages/auth/Login"));
 
 export const routes = [
   {
@@ -58,12 +59,22 @@ export const routes = [
     ),
   },
   {
-    path: "/Register",
+    path: "/register",
     name: "register",
     exact: true,
     element: (
       <Suspense fallback={<div>Loading...</div>}>
         <Register />
+      </Suspense>
+    ),
+  },
+  {
+    path: "/login",
+    name: "login",
+    exact: true,
+    element: (
+      <Suspense fallback={<div>Loading...</div>}>
+        <Login />
       </Suspense>
     ),
   },

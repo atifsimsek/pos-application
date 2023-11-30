@@ -31,27 +31,27 @@ const Statistics = () => {
 
   const data2 = [
     {
-      type: "分类一",
+      type: "test",
       value: 27,
     },
     {
-      type: "分类二",
+      type: "test1",
       value: 25,
     },
     {
-      type: "分类三",
+      type: "test2",
       value: 18,
     },
     {
-      type: "分类四",
+      type: "test3",
       value: 15,
     },
     {
-      type: "分类五",
+      type: "test4",
       value: 10,
     },
     {
-      type: "其他",
+      type: "test5",
       value: 5,
     },
   ];

@@ -62,7 +62,7 @@ const Register = () => {
           </Form>
           <div className="flex justify-center w-full absolute left-0 bottom-10">
             Bir hesabınız var mı ? &nbsp;
-            <Link className="text-blue-600 " to={"/logins"}>
+            <Link className="text-blue-600 " to={"/login"}>
               {"  "}
               Şimdi Giriş Yap
             </Link>
@@ -71,7 +71,7 @@ const Register = () => {
         <div className="xl:w-4/6 lg:w-3/5 md:w-1/2 md:flex hidden bg-[#6c63ff] h-full">
           <div className="w-full h-full  flex items-center">
             <div className="w-full">
-              <Carousel className="!h-full px-6">
+              <Carousel autoplay className="!h-full px-6">
                 <AuthCarousel
                   img={"images/responsive.svg"}
                   title={"Responsive"}

@@ -7,10 +7,9 @@ const router = express.Router();
 router.get("/get-all", async (req, res) => {
   try {
     const bills = await Bill.find();
-    res.send(bills);
     res.status(200).json(bills);
   } catch (error) {
-    console.log(error);
+    res.status(500).json(err);
   }
 });
 
@@ -20,11 +19,10 @@ router.post("/add-bill", async (req, res) => {
   try {
     const newBill = new Bill(req.body);
     await newBill.save();
-    res.status(200).json("item added succesfully");
+    res.status(200).json("Bill added succesfully");
   } catch (err) {
-    res.status(400).json(err);
+    res.status(500).json(err);
   }
 });
-
 
 module.exports = router;

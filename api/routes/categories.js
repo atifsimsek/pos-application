@@ -10,7 +10,7 @@ router.get("/get-all", async (req, res) => {
     res.send(categories);
     res.status(200).json(categories);
   } catch (error) {
-    console.log(error);
+    res.status(500).json(err);
   }
 });
 
@@ -22,7 +22,7 @@ router.post("/add-category", async (req, res) => {
     await newCategory.save();
     res.status(200).json("item added succesfully");
   } catch (err) {
-    res.status(400).json(err);
+    res.status(500).json(err);
   }
 });
 
@@ -33,7 +33,7 @@ router.put("/update-category", async (req, res) => {
     await Category.findOneAndUpdate({ _id: req.body.categoryId }, req.body);
     res.status(200).json("item updated succesfully");
   } catch (err) {
-    console.log(err);
+    res.status(500).json(err);
   }
 });
 
@@ -44,7 +44,7 @@ router.delete("/delete-category", async (req, res) => {
     await Category.findOneAndDelete({ _id: req.body.categoryId });
     res.status(200).json("item deleted succesfully");
   } catch (err) {
-    console.log(err);
+    res.status(500).json(err);
   }
 });
 

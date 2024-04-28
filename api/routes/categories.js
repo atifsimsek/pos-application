@@ -7,9 +7,8 @@ const router = express.Router();
 router.get("/get-all", async (req, res) => {
   try {
     const categories = await Category.find();
-    res.send(categories);
     res.status(200).json(categories);
-  } catch (error) {
+  } catch (err) {
     res.status(500).json(err);
   }
 });

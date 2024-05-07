@@ -25,13 +25,13 @@ const Categories = ({ categories, setCategories }) => {
           </li>
         ))}
         <li
-          className="category-item !bg-red-500 hover:opacity-90"
+          className="category-item !bg-red-500 hover:opacity-70"
           onClick={showAddModal}
         >
           <PlusOutlined />
         </li>
         <li
-          className="category-item !bg-yellow-400 hover:opacity-90"
+          className="category-item !bg-yellow-400 hover:opacity-70"
           onClick={showEditModal}
         >
           <EditOutlined />

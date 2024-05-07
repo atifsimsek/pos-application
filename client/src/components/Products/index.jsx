@@ -1,90 +1,58 @@
-import React from "react";
+import { useEffect, useState } from "react";
+import ProductItem from "./ProductItem";
+import { PlusOutlined, EditOutlined } from "@ant-design/icons";
+import Add from "./Add";
 
-const products = [
-  {
-    id: 1,
-    name: "Elma",
-    price: 12,
-    image:
-      "https://i.lezzet.com.tr/images-xxlarge-secondary/elma-nasil-yenir-221135ca-f383-474c-a4f5-ad02a45db978.jpg",
-  },
-  {
-    id: 2,
-    name: "Elma",
-    price: 12,
-    image:
-      "https://i.lezzet.com.tr/images-xxlarge-secondary/elma-nasil-yenir-221135ca-f383-474c-a4f5-ad02a45db978.jpg",
-  },
-  {
-    id: 3,
-    name: "Elma",
-    price: 12,
-    image:
-      "https://i.lezzet.com.tr/images-xxlarge-secondary/elma-nasil-yenir-221135ca-f383-474c-a4f5-ad02a45db978.jpg",
-  },
-  {
-    id: 4,
-    name: "Elma",
-    price: 12,
-    image:
-      "https://i.lezzet.com.tr/images-xxlarge-secondary/elma-nasil-yenir-221135ca-f383-474c-a4f5-ad02a45db978.jpg",
-  },
-  {
-    id: 5,
-    name: "Elma",
-    price: 12,
-    image:
-      "https://i.lezzet.com.tr/images-xxlarge-secondary/elma-nasil-yenir-221135ca-f383-474c-a4f5-ad02a45db978.jpg",
-  },
-  {
-    id: 6,
-    name: "Elma",
-    price: 12,
-    image:
-      "https://i.lezzet.com.tr/images-xxlarge-secondary/elma-nasil-yenir-221135ca-f383-474c-a4f5-ad02a45db978.jpg",
-  },
-  {
-    id: 8,
-    name: "Elma",
-    price: 12,
-    image:
-      "https://i.lezzet.com.tr/images-xxlarge-secondary/elma-nasil-yenir-221135ca-f383-474c-a4f5-ad02a45db978.jpg",
-  },
-  {
-    id: 9,
-    name: "Elma",
-    price: 12,
-    image:
-      "https://i.lezzet.com.tr/images-xxlarge-secondary/elma-nasil-yenir-221135ca-f383-474c-a4f5-ad02a45db978.jpg",
-  },
-  {
-    id: 10,
-    name: "Elma",
-    price: 12,
-    image:
-      "https://i.lezzet.com.tr/images-xxlarge-secondary/elma-nasil-yenir-221135ca-f383-474c-a4f5-ad02a45db978.jpg",
-  },
-];
+const Products = ({ categories }) => {
+  const [products, setProducts] = useState();
+  const [addModalOpen, setAddModalOpen] = useState(false);
 
-const Products = () => {
+  const showAddModal = () => {
+    setAddModalOpen(true);
+  };
+
+  // const showEditModal = () => {
+  //   setEditModalOpen(true);
+  // };
+
+  useEffect(() => {
+    const getProducts = async () => {
+      try {
+        const res = await fetch("http://localhost:5000/api/products/get-all");
+        const data = await res.json();
+        setProducts(data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getProducts();
+  }, []);
+
   return (
-    <div className="product-wrapper grid gap-4 grid-cols-card">
-      {products.map((product) => (
-        <div className="product-item border hover:shadow-lg cursor-pointer transition-all">
-          <div className="product-img">
-            <img
-              className="h-28 object-cover w-full border-b"
-              src={product.image}
-              alt=""
-            />
-          </div>
-          <div className="product-info flex flex-col p-3">
-            <span className="font-bold">{product.name}</span>
-            <span>{product.price}₺</span>
-          </div>
+    <>
+      <div className="product-wrapper grid gap-4 grid-cols-card">
+        {products &&
+          products.map((product) => (
+            <ProductItem product={product} key={product._id} />
+          ))}
+        <div
+          onClick={showAddModal}
+          className="product-item border hover:shadow-lg cursor-pointer transition-all flex items-center justify-center bg-red-500 hover:opacity-70 min-h-[180px] "
+        >
+          <PlusOutlined className="text-white md:text-2xl " />
         </div>
-      ))}
-    </div>
+        <div className="product-item border hover:shadow-lg cursor-pointer transition-all flex items-center justify-center bg-yellow-400  hover:opacity-70 min-h-[180px]">
+          <EditOutlined className="text-white md:text-2xl " />
+        </div>
+      </div>
+      <Add
+        categories={categories}
+        addModalOpen={addModalOpen}
+        setAddModalOpen={setAddModalOpen}
+        products={products}
+        setProducts={setProducts}
+      />
+    </>
   );
 };
 

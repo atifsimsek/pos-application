@@ -26,7 +26,6 @@ const Add = ({ categories, setCategories, addModalOpen, setAddModalOpen }) => {
         })
         .finally(() => {
           form.resetFields();
-          setAddModalOpen(false);
           setCategories([
             ...categories,
             {
@@ -37,7 +36,6 @@ const Add = ({ categories, setCategories, addModalOpen, setAddModalOpen }) => {
         });
     } catch (error) {
       console.log(error);
-      setAddModalOpen(false);
     }
   };
   return (

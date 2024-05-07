@@ -25,7 +25,7 @@ const Homepage = () => {
           <Categories categories={categories} setCategories={setCategories} />
         </div>
         <div className="products flex-1 max-h-[calc(100vh-130px)] overflow-auto ">
-          <Products />
+          <Products categories={categories} />
         </div>
         <div className="cart-wrapper min-w-[300px] md:-mr-[24px] md:-mt-[24px] border ">
           <CartTotals />

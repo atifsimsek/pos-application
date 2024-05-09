@@ -2,10 +2,12 @@ import { useEffect, useState } from "react";
 import ProductItem from "./ProductItem";
 import { PlusOutlined, EditOutlined } from "@ant-design/icons";
 import Add from "./Add";
+import { useNavigate } from "react-router-dom";
 
 const Products = ({ categories }) => {
   const [products, setProducts] = useState();
   const [addModalOpen, setAddModalOpen] = useState(false);
+  const navigate = useNavigate();
 
   const showAddModal = () => {
     setAddModalOpen(true);
@@ -41,7 +43,12 @@ const Products = ({ categories }) => {
         >
           <PlusOutlined className="text-white md:text-2xl " />
         </div>
-        <div className="product-item border hover:shadow-lg cursor-pointer transition-all flex items-center justify-center bg-yellow-400  hover:opacity-70 min-h-[180px]">
+        <div
+          onClick={() => {
+            navigate("/product");
+          }}
+          className="product-item border hover:shadow-lg cursor-pointer transition-all flex items-center justify-center bg-yellow-400  hover:opacity-70 min-h-[180px]"
+        >
           <EditOutlined className="text-white md:text-2xl " />
         </div>
       </div>

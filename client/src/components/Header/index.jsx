@@ -98,7 +98,7 @@ const Header = () => {
                 key={index}
                 to={link.to}
                 className={({ isActive }) =>
-                  ` menu-link flex flex-col hover:text-[#40a9ff] transition-all ${
+                  ` menu-link flex justify-center items-center flex-col hover:text-[#40a9ff] transition-all ${
                     isActive && "text-[#40a9ff]"
                   }`
                 }

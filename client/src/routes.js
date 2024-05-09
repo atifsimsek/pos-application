@@ -1,4 +1,5 @@
 import React, { lazy, Suspense } from "react";
+import ProductPage from "./pages/ProductPage";
 const Homepage = lazy(() => import("./pages/Homepage"));
 const CartPage = lazy(() => import("./pages/CartPage"));
 const BillPage = lazy(() => import("./pages/BillPage"));
@@ -25,6 +26,16 @@ export const routes = [
     element: (
       <Suspense fallback={<div>Loading...</div>}>
         <CartPage />
+      </Suspense>
+    ),
+  },
+  {
+    path: "/product",
+    name: "product",
+    exact: true,
+    element: (
+      <Suspense fallback={<div>Loading...</div>}>
+        <ProductPage />
       </Suspense>
     ),
   },

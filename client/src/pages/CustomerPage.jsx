@@ -1,10 +1,7 @@
 import React from "react";
-import { Table, Card, Button } from "antd";
-import { useState } from "react";
-import PrintBill from "../components/Bills/PrintBill";
-const BillPage = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+import { Table } from "antd";
 
+const BillPage = () => {
   const dataSource = [
     {
       key: "1",

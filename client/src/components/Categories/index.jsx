@@ -36,17 +36,11 @@ const Categories = ({ categories, setCategories }) => {
         >
           <EditOutlined />
         </li>
-        <Add
-          addModalOpen={addModalOpen}
-          setAddModalOpen={setAddModalOpen}
-          categories={categories}
-          setCategories={setCategories}
-        />
+        <Add addModalOpen={addModalOpen} setAddModalOpen={setAddModalOpen} />
         <Edit
           editModalOpen={editModalOpen}
           setEditModalOpen={setEditModalOpen}
           categories={categories}
-          setCategories={setCategories}
         />
       </ul>
     </>

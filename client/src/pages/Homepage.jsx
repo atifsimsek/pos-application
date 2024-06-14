@@ -1,28 +1,33 @@
-import { useEffect, useState } from "react";
-import CartTotals from "../components/Cart/CartTotals";
-import Categories from "../components/Categories";
+import { useQuery } from "@tanstack/react-query";
 import Products from "../components/Products";
+import Categories from "../components/Categories";
+import CartTotals from "../components/Cart/CartTotals";
+import { getCategories } from "../services/categories";
 
 const Homepage = () => {
-  const [categories, setCategories] = useState([]);
+  const {
+    data: categories,
+    error,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["categories"],
+    queryFn: getCategories,
+  });
 
-  useEffect(() => {
-    const getCategories = async () => {
-      try {
-        const res = await fetch("http://localhost:5000/api/categories/get-all");
-        const data = await res.json();
-        setCategories(data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    getCategories();
-  }, []);
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (isError) {
+    return <div>Error: {error.message}</div>;
+  }
+
   return (
     <>
       <div className="home px-6 flex flex-col md:flex-row justify-between gap-10 md:pb-0 pb-24">
         <div className="categories  overflow-auto max-h-[calc(100vh-130px)]">
-          <Categories categories={categories} setCategories={setCategories} />
+          <Categories categories={categories} />
         </div>
         <div className="products flex-1 max-h-[calc(100vh-130px)] overflow-auto ">
           <Products categories={categories} />

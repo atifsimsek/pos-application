@@ -116,8 +116,8 @@ const CartTotals = () => {
         Sepetteki Ürünler
       </h2>
       <ul className="cart-items px-2 flex flex-col gap-y-3 overflow-y-auto">
-        {products.map((product) => (
-          <li className="cart-item flex justify-between">
+        {products.map((product, index) => (
+          <li key={index} className="cart-item flex justify-between">
             <div className="flex items-center">
               <img
                 className="w-16 h-16 object-cover pt-2"

@@ -1,14 +1,36 @@
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Table, Modal, Form, Input, Button, message } from "antd";
 import { useState } from "react";
+import { deleteCategory, updateCategory } from "../../services/categories";
 
-const Edit = ({
-  editModalOpen,
-  setEditModalOpen,
-  categories,
-  setCategories,
-}) => {
+const Edit = ({ categories, editModalOpen, setEditModalOpen }) => {
   const [editingRow, setEditingRow] = useState(null);
   const [inputValue, setInputValue] = useState("");
+  const queryClient = useQueryClient();
+
+  const updateMutation = useMutation({
+    mutationFn: updateCategory,
+    onSuccess: () => {
+      queryClient.invalidateQueries("categories");
+      message.success("Kategori Başarıyla Güncellendi");
+      setEditingRow(null);
+      setInputValue("");
+    },
+    onError: () => {
+      message.error("Kategori Güncellenirken Bir Hata Oluştu");
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: deleteCategory,
+    onSuccess: () => {
+      queryClient.invalidateQueries("categories");
+      message.success("Kategori Başarıyla Silindi");
+    },
+    onError: () => {
+      message.error("Kategori Silinirken Bir Hata Oluştu");
+    },
+  });
 
   const handleOk = () => {
     setEditModalOpen(false);
@@ -18,42 +40,12 @@ const Edit = ({
     setEditModalOpen(false);
   };
 
-  const onFinish = () => {
-    try {
-      fetch("http://localhost:5000/api/categories/update-category", {
-        method: "PUT",
-        body: JSON.stringify({ title: inputValue, categoryId: editingRow._id }),
-        headers: { "content-type": "application/json; charset=UTF-8" },
-      });
-      message.success("Kategori Başarıyla Güncellendi");
-      setCategories(
-        categories.map((item) => {
-          if (item._id === editingRow._id) {
-            return { ...item, title: inputValue };
-          }
-          return item;
-        })
-      );
-      setEditingRow(null);
-    } catch (error) {
-      console.log(error);
-      message.error("Kategori Güncellenirken Bir Hata Oluştu");
-    }
+  const handleDelete = (id) => {
+    deleteMutation.mutate(id);
   };
 
-  const deleteCategory = (id) => {
-    try {
-      fetch("http://localhost:5000/api/categories/delete-category", {
-        method: "DELETE",
-        body: JSON.stringify({ categoryId: id }),
-        headers: { "content-type": "application/json; charset=UTF-8" },
-      });
-      message.success("Kategori Başarıyla Silindi");
-      setCategories(categories.filter((item) => item._id !== id));
-    } catch (error) {
-      console.log(error);
-      message.error("Kategori Silinirken Bir Hata Oluştu");
-    }
+  const onFinish = () => {
+    updateMutation.mutate({ categoryId: editingRow._id, title: inputValue });
   };
 
   const columns = [
@@ -99,7 +91,7 @@ const Edit = ({
               type="link"
               danger
               onClick={() => {
-                deleteCategory(data._id);
+                handleDelete(data._id);
               }}
             >
               Sil

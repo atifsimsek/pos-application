@@ -1,7 +1,21 @@
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button, Form, Input, Modal, message } from "antd";
+import { addCategory } from "../../services/categories";
 
-const Add = ({ categories, setCategories, addModalOpen, setAddModalOpen }) => {
+const Add = ({ addModalOpen, setAddModalOpen }) => {
   const [form] = Form.useForm();
+  const queryClient = useQueryClient();
+  const mutation = useMutation({
+    mutationFn: addCategory,
+    onSuccess: () => {
+      queryClient.invalidateQueries("categories");
+      message.success("Kategori Başarıyla Eklendi");
+      setAddModalOpen(false);
+    },
+    onError: () => {
+      message.error("Kategori Eklenirken Bir Hata Oluştu");
+    },
+  });
 
   const handleOk = () => {
     setAddModalOpen(false);
@@ -11,32 +25,8 @@ const Add = ({ categories, setCategories, addModalOpen, setAddModalOpen }) => {
   };
 
   const onFinish = (values) => {
-    try {
-      fetch("http://localhost:5000/api/categories/add-category", {
-        method: "POST",
-        body: JSON.stringify(values),
-        headers: { "content-type": "application/json" },
-      })
-        .then((res) => {
-          if (res.status === 200) {
-            message.success("Kategori Başarıyla Eklendi");
-          } else {
-            message.error("Kategori Eklenirken Bir Hata Oluştu");
-          }
-        })
-        .finally(() => {
-          form.resetFields();
-          setCategories([
-            ...categories,
-            {
-              _id: Math.random(),
-              title: values.title,
-            },
-          ]);
-        });
-    } catch (error) {
-      console.log(error);
-    }
+    mutation.mutate(values);
+    form.resetFields();
   };
   return (
     <Modal

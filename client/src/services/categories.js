@@ -1,11 +1,4 @@
-import axios from "axios";
-
-const apiClient = axios.create({
-  baseURL: "http://localhost:5000",
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
+import { apiClient } from "./apiClient";
 
 export const getCategories = async () => {
   const response = await apiClient.get("/api/categories/get-all");

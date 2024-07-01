@@ -1,13 +1,20 @@
+import { addProduct } from "../../services/products";
 import { Button, Form, Input, Modal, Select, message } from "antd";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-const Add = ({
-  addModalOpen,
-  setAddModalOpen,
-  categories,
-  products,
-  setProducts,
-}) => {
+const Add = ({ addModalOpen, setAddModalOpen, categories }) => {
   const [form] = Form.useForm();
+  const queryClient = useQueryClient();
+  const addMutation = useMutation({
+    mutationFn: addProduct,
+    onSuccess: () => {
+      queryClient.invalidateQueries("products");
+      message.success("Ürün başarıyla eklendi");
+    },
+    onError: () => {
+      message.error("Ürün eklenirken bir hata oluştu");
+    },
+  });
 
   const handleOk = () => {
     setAddModalOpen(false);
@@ -17,34 +24,9 @@ const Add = ({
   };
 
   const onFinish = (values) => {
-    try {
-      fetch("http://localhost:5000/api/products/add-product", {
-        method: "POST",
-        body: JSON.stringify(values),
-        headers: { "content-type": "application/json" },
-      })
-        .then((res) => {
-          if (res.status === 200) {
-            message.success("Kategori Başarıyla Eklendi");
-          } else {
-            message.error("Kategori Eklenirken Bir Hata Oluştu");
-          }
-        })
-        .finally(() => {
-          form.resetFields();
-          setProducts([
-            ...products,
-            {
-              ...values,
-              id: Math.random(),
-              price: Number(values.price),
-            },
-          ]);
-        });
-    } catch (error) {
-      console.log(error);
-    }
+    addMutation.mutate(values);
   };
+
   return (
     <Modal
       title="Yeni Kategori Ekle"
@@ -59,7 +41,7 @@ const Add = ({
           label="Ürün Adı"
           rules={[{ required: true, message: "Ürün Adı Alanı Boş Geçilemez" }]}
         >
-          <Input placeholder="Ürün adı giriniz" />
+          <Input allowClear placeholder="Ürün adı giriniz" />
         </Form.Item>
         <Form.Item
           name={"img"}
@@ -68,7 +50,7 @@ const Add = ({
             { required: true, message: "Ürün Görseli Alanı Boş Geçilemez" },
           ]}
         >
-          <Input placeholder="Ürün görseli giriniz" />
+          <Input allowClear placeholder="Ürün görseli giriniz" />
         </Form.Item>
         <Form.Item
           name={"price"}
@@ -77,7 +59,7 @@ const Add = ({
             { required: true, message: "Ürün Fiyatı Alanı Boş Geçilemez" },
           ]}
         >
-          <Input placeholder="Ürün fiyatı giriniz" />
+          <Input allowClear placeholder="Ürün fiyatı giriniz" />
         </Form.Item>
         <Form.Item
           name={"category"}
@@ -85,6 +67,7 @@ const Add = ({
           rules={[{ required: true, message: "Kategori Alanı Boş Geçilemez" }]}
         >
           <Select
+            allowClear
             showSearch
             placeholder="Lütfen bir kategori seçiniz"
             optionFilterProp="children"

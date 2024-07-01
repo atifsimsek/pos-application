@@ -1,38 +1,56 @@
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Table, Form, Input, Button, message, Modal, Select } from "antd";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { getCategories } from "../../services/categories";
+import {
+  deleteProduct,
+  getProducts,
+  updateProduct,
+} from "../../services/products";
+import { getProductColums } from "./getProductColums";
 
 const Edit = () => {
   const [form] = Form.useForm();
-  const [products, setProducts] = useState();
-  const [categories, setCategories] = useState([]);
   const [addModalOpen, setAddModalOpen] = useState(false);
   const [editingRow, setEditingRow] = useState(null);
+  const queryClient = useQueryClient();
 
-  useEffect(() => {
-    const getCategories = async () => {
-      try {
-        const res = await fetch("http://localhost:5000/api/categories/get-all");
-        const data = await res.json();
-        setCategories(data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    getCategories();
-  }, []);
+  const { data: categories, isLoading: categoriesIsLoading } = useQuery({
+    queryKey: ["categories"],
+    queryFn: getCategories,
+  });
 
-  useEffect(() => {
-    const getProducts = async () => {
-      try {
-        const res = await fetch("http://localhost:5000/api/products/get-all");
-        const data = await res.json();
-        setProducts(data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    getProducts();
-  }, []);
+  const {
+    data:products,
+    error: productError,
+    isLoading: productIsLoading,
+    isError: productIsError,
+  } = useQuery({
+    queryKey: ["products"],
+    queryFn: getProducts,
+  });
+
+  const updateMutation = useMutation({
+    mutationFn: updateProduct,
+    onSuccess: () => {
+      queryClient.invalidateQueries("products");
+      message.success("Ürün başarıyla güncellendi");
+    },
+    onError: () => {
+      message.error("Ürün güncellenirken bir hata oluştu");
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: deleteProduct,
+    onSuccess: () => {
+      queryClient.invalidateQueries("products");
+      message.success("Ürün başarıyla silindi");
+    },
+    onError: () => {
+      message.error("Ürün silinirken bir hata oluştu");
+    },
+  });
 
   const handleOk = () => {
     setAddModalOpen(false);
@@ -43,110 +61,27 @@ const Edit = () => {
   };
 
   const onFinish = (values) => {
-    try {
-      fetch("http://localhost:5000/api/products/update-product", {
-        method: "PUT",
-        body: JSON.stringify({ productId: editingRow._id, ...values }),
-        headers: { "content-type": "application/json; charset=UTF-8" },
-      });
-      message.success("Ürün Başarıyla Güncellendi");
-      setEditingRow(null);
-      setProducts((prev) => {
-        return prev.map((product) => {
-          if (product._id === editingRow._id) {
-            return { ...product, ...values };
-          }
-          return product;
-        });
-      });
-    } catch (error) {
-      console.log(error);
-      message.error("Ürün Güncellenirken Bir Hata Oluştu");
-    }
+    updateMutation.mutate({ productId: editingRow._id, values });
   };
 
-  const deleteProduct = (id) => {
-    try {
-      fetch("http://localhost:5000/api/products/delete-product", {
-        method: "DELETE",
-        body: JSON.stringify({ productId: id }),
-        headers: { "content-type": "application/json; charset=UTF-8" },
-      });
-      message.success("Ürün Başarıyla Silindi");
-      setEditingRow(null);
-      setProducts(products.filter((product) => product._id !== id));
-    } catch (error) {
-      console.log(error);
-      message.error("Ürün Silinirken Bir Hata Oluştu");
-    }
+  const handleDelete = (id) => {
+    deleteMutation.mutate(id);
   };
 
-  const columns = [
-    {
-      title: "Ürün Adı",
-      dataIndex: "title",
-      width: "8%",
-      render: (_, data) => {
-        return <p>{data.title}</p>;
-      },
-    },
-    {
-      title: "Ürün Görseli",
-      dataIndex: "img",
-      width: "4%",
-      render: (_, data) => {
-        return (
-          <img
-            className="w-full h-20 object-cover"
-            src={data.img}
-            alt={data.title}
-          />
-        );
-      },
-    },
-    {
-      title: "Ürün Fiyatı",
-      dataIndex: "price",
-      width: "8%",
-    },
-    {
-      title: "Kategori",
-      dataIndex: "category",
-      width: "8%",
-    },
-    {
-      title: "Action",
-      dataIndex: "action",
-      width: "8%",
-      render: (_, data) => {
-        return (
-          <div>
-            <Button
-              className="pl-0"
-              type="link"
-              onClick={() => {
-                setAddModalOpen(true);
-                console.log(data);
-                setEditingRow(data);
-                form.setFieldsValue(data);
-              }}
-            >
-              Düzenle
-            </Button>
-            <Button
-              type="link"
-              danger
-              onClick={() => {
-                deleteProduct(data._id);
-              }}
-            >
-              Sil
-            </Button>
-          </div>
-        );
-      },
-    },
-  ];
+  const columns = getProductColums(
+    setAddModalOpen,
+    setEditingRow,
+    form,
+    handleDelete
+  );
+
+  if (productIsLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (productIsError) {
+    return <div>Error: {productError.message}</div>;
+  }
   return (
     <>
       <Table
@@ -209,6 +144,7 @@ const Edit = () => {
             <Select
               showSearch
               placeholder="Lütfen bir kategori seçiniz"
+              loading={categoriesIsLoading}
               optionFilterProp="children"
               filterOption={(input, option) =>
                 (option?.value ?? "")

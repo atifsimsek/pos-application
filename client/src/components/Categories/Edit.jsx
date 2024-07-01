@@ -57,6 +57,7 @@ const Edit = ({ categories, editModalOpen, setEditModalOpen }) => {
           <Input
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
+            allowClear
           />
         ) : (
           <p>{data.title}</p>

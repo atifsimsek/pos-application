@@ -1,42 +1,43 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import ProductItem from "./ProductItem";
 import { PlusOutlined, EditOutlined } from "@ant-design/icons";
 import Add from "./Add";
 import { useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { getProducts } from "../../services/products";
 
 const Products = ({ categories }) => {
-  const [products, setProducts] = useState();
   const [addModalOpen, setAddModalOpen] = useState(false);
   const navigate = useNavigate();
+
+  const {
+    data: products,
+    error,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["products"],
+    queryFn: getProducts,
+  });
 
   const showAddModal = () => {
     setAddModalOpen(true);
   };
 
-  // const showEditModal = () => {
-  //   setEditModalOpen(true);
-  // };
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
-  useEffect(() => {
-    const getProducts = async () => {
-      try {
-        const res = await fetch("http://localhost:5000/api/products/get-all");
-        const data = await res.json();
-        setProducts(data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    getProducts();
-  }, []);
+  if (isError) {
+    return <div>Error: {error.message}</div>;
+  }
 
   return (
     <>
       <div className="product-wrapper grid gap-4 grid-cols-card">
-        {products &&
-          products.map((product) => (
-            <ProductItem product={product} key={product._id} />
-          ))}
+        {products.map((product) => (
+          <ProductItem product={product} key={product._id} />
+        ))}
         <div
           onClick={showAddModal}
           className="product-item border hover:shadow-lg cursor-pointer transition-all flex items-center justify-center bg-red-500 hover:opacity-70 min-h-[180px] "
@@ -56,8 +57,6 @@ const Products = ({ categories }) => {
         categories={categories}
         addModalOpen={addModalOpen}
         setAddModalOpen={setAddModalOpen}
-        products={products}
-        setProducts={setProducts}
       />
     </>
   );

@@ -1,10 +1,11 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Button, Form, Input, Modal, message } from "antd";
 import { addCategory } from "../../services/categories";
+import { Button, Form, Input, Modal, message } from "antd";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 const Add = ({ addModalOpen, setAddModalOpen }) => {
   const [form] = Form.useForm();
   const queryClient = useQueryClient();
+
   const mutation = useMutation({
     mutationFn: addCategory,
     onSuccess: () => {

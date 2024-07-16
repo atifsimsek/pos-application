@@ -1,6 +1,6 @@
 import React from "react";
 
-const StatisticsCard = ({ title, amount, img }) => {
+const StatisticCard = ({ title, amount, img }) => {
   return (
     <div className="card-item bg-gray-800 p-8 rounded-lg">
       <div className="flex gap-x-4">
@@ -16,4 +16,4 @@ const StatisticsCard = ({ title, amount, img }) => {
   );
 };
 
-export default StatisticsCard;
+export default StatisticCard;

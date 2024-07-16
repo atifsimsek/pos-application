@@ -1,11 +1,11 @@
 import { Button, Modal, Popconfirm } from "antd";
-import React, { useState } from "react";
 import {
   ClearOutlined,
   PlusCircleOutlined,
   MinusCircleOutlined,
 } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import {
   clearCart,
   decraseProduct,
@@ -13,11 +13,10 @@ import {
 } from "../../redux/cartSlice";
 
 const CartTotals = () => {
-  const { cartItems, total, tax } = useSelector((state) => state.cart);
-  const dispatch = useDispatch();
-  const [open, setOpen] = useState(false);
-  const [currentProduct, setCurrentProduct] = useState(null);
   const confirm = Modal.confirm;
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { cartItems, total, tax } = useSelector((state) => state.cart);
 
   const handleClearCart = () => {
     confirm({
@@ -36,30 +35,12 @@ const CartTotals = () => {
     });
   };
 
-  const onCancel = () => {
-    setOpen(false);
-    setCurrentProduct(null);
-  };
-
-  const onConfirm = () => {
-    if (currentProduct) {
-      dispatch(decraseProduct(currentProduct));
-    }
-    setOpen(false);
-    setCurrentProduct(null);
-  };
-
   const incrase = (product) => {
     dispatch(incraseProduct(product));
   };
 
   const decrase = (product) => {
-    if (product.quantity === 1) {
-      setCurrentProduct(product);
-      setOpen(true);
-    } else {
-      dispatch(decraseProduct(product));
-    }
+    dispatch(decraseProduct(product));
   };
 
   return (
@@ -93,16 +74,21 @@ const CartTotals = () => {
                   icon={<PlusCircleOutlined />}
                 />
                 <span className="font-bold">{product.quantity}</span>
-                <Popconfirm
-                  open={open && currentProduct === product}
-                  onCancel={onCancel}
-                  onConfirm={onConfirm}
-                  title="Uyarı"
-                  description="Ürünü sepetten çıkarmak istediğinize emin misiniz?"
-                  okText="Evet"
-                  cancelText="Hayır"
-                  placement="bottomLeft"
-                >
+                {product.quantity === 1 ? (
+                  <Popconfirm
+                    title="Ürünü silmek istediğinize emin misiniz?"
+                    okText="Evet"
+                    cancelText="Hayır"
+                    onConfirm={() => decrase(product)}
+                  >
+                    <Button
+                      type="primary"
+                      size="middle"
+                      className="flex bg-red justify-center items-center rounded-full"
+                      icon={<MinusCircleOutlined />}
+                    />
+                  </Popconfirm>
+                ) : (
                   <Button
                     onClick={() => decrase(product)}
                     type="primary"
@@ -110,7 +96,7 @@ const CartTotals = () => {
                     className="flex bg-red justify-center items-center rounded-full"
                     icon={<MinusCircleOutlined />}
                   />
-                </Popconfirm>
+                )}
               </div>
             </li>
           ))}
@@ -139,6 +125,7 @@ const CartTotals = () => {
               size="large"
               className="w-full"
               disabled={total === 0 ? true : false}
+              onClick={() => navigate("/cart")}
             >
               Create Order
             </Button>

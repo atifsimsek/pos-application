@@ -20,6 +20,12 @@ const cartSlice = createSlice({
       }
       state.total += action.payload.price;
     },
+    deleteProduct: (state, action) => {
+      state.cartItems = state.cartItems.filter(
+        (product) => product._id !== action.payload._id
+      );
+      state.total -= action.payload.price * action.payload.quantity;
+    },
     incraseProduct: (state, action) => {
       const findProduct = state.cartItems.find(
         (product) => product._id === action.payload._id

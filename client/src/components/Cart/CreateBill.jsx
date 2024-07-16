@@ -1,66 +1,89 @@
-import { Button, Card, Form, Input, Modal, Select } from "antd";
-import React from "react";
+import { useNavigate } from "react-router-dom";
+import { clearCart } from "../../redux/cartSlice";
+import { createBill } from "../../services/bills";
+import { useDispatch, useSelector } from "react-redux";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { Button, Card, Form, Input, message, Modal, Select } from "antd";
 
 const CreateBill = ({ isModalOpen, setIsModalOpen }) => {
-  const onFinish = (values) => {
-    console.log("Success:", values);
+  const [form] = Form.useForm();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const queryClient = useQueryClient();
+  const { cartItems, total, tax } = useSelector((state) => state.cart);
+
+  const addBillMutation = useMutation({
+    mutationFn: createBill,
+    onSuccess: () => {
+      queryClient.invalidateQueries("bills");
+      message.success("Fatura başarıyla oluşturuldu");
+      form.resetFields();
+      dispatch(clearCart());
+      navigate("/bills");
+    },
+    onError: () => {
+      message.error("Fatura oluşturulurken bir hata oluştu");
+    },
+  });
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
   };
 
+  const onFinish = (values) => {
+    addBillMutation.mutate({
+      ...values,
+      cardItems: cartItems,
+      subTotal: total,
+      tax: total === 0 ? "0" : ((total * tax) / 100).toFixed(2),
+      totalAmount: total === 0 ? "0" : (total + (total * tax) / 100).toFixed(2),
+    });
+  };
+
+  console.log(addBillMutation, "addBillMutation");
   return (
     <>
       <Modal
-        title="Sipariş Oluştur"
+        title="Fatura Oluştur"
         open={isModalOpen}
-        // onOk={handleOk}
-        onCancel={() => {
-          setIsModalOpen(false);
-        }}
-        onFinish={onFinish}
-        footer={null}
+        onCancel={handleCancel}
+        footer={false}
       >
-        <Form layout="vertical" onFinish={onFinish}>
+        <Form layout="vertical" onFinish={onFinish} form={form}>
           <Form.Item
-            label="Müşteri Adı"
             name={"customerName"}
+            label="Müşteri Adı"
             rules={[
-              {
-                required: true,
-                message: "Lütfen bir müşteri adı giriniz",
-              },
+              { required: true, message: "Müşteri Adı Alanı Boş Geçilemez" },
             ]}
           >
-            <Input placeholder="Bir müşteri adı giriniz" />
+            <Input placeholder="Müşteri adı giriniz" />
           </Form.Item>
           <Form.Item
-            className="py-2"
+            name={"customerPhoneNumber"}
             label="Tel No"
-            name={"phoneNumber"}
-            maxLength={11}
-            rules={[
-              {
-                required: true,
-                message: "Lütfen bir telefon numarası giriniz",
-              },
-            ]}
+            rules={[{ required: true, message: "Telefon Alanı Boş Geçilemez" }]}
           >
-            <Input placeholder="Bir telefon numarası giriniz." />
+            <Input placeholder="Telefon giriniz" />
           </Form.Item>
           <Form.Item
-            label="Ödeme Yöntemi"
             name={"paymentMode"}
+            label="Ödeme Yöntemi"
             rules={[
-              {
-                required: true,
-                message: "Lütfen bir telefon numarası giriniz.",
-              },
+              { required: true, message: "Ödeme Yöntemi Alanı Boş Geçilemez" },
             ]}
           >
-            <Select placeholder="Lütfen bir ödeme yöntemi seçiniz">
-              <Select.Option value="nakit">Nakit</Select.Option>
-              <Select.Option value="kredi kartı">Kredi Kartı</Select.Option>
-            </Select>
+            <Select
+              showSearch
+              placeholder="Lütfen bir ödeme yöntemi seçiniz"
+              options={[
+                { label: "Nakit", value: "Nakit" },
+                { label: "Kredi Kartı", value: "Kredi Kartı" },
+              ]}
+            />
           </Form.Item>
-          <Card className="">
+
+          <Card className="w-full">
             <div className="flex justify-between">
               <span>Ara Toplam</span>
               <span>549.00₺</span>
@@ -75,10 +98,11 @@ const CreateBill = ({ isModalOpen, setIsModalOpen }) => {
             </div>
             <div className="flex justify-end">
               <Button
-                htmlType="submit"
-                className="mt-2 "
                 type="primary"
-                size="large"
+                size="medium"
+                className="mt-2"
+                htmlType="submit"
+                loading={addBillMutation?.isPending}
               >
                 Sipariş Oluştur
               </Button>

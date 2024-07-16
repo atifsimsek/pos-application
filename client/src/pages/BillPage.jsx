@@ -1,42 +1,75 @@
-import React from "react";
-import { Table, Card, Button } from "antd";
-import { useState } from "react";
+import React, { useState } from "react";
+import { Table, Button } from "antd";
+import { useQuery } from "@tanstack/react-query";
+import { getBills } from "../services/bills";
 import PrintBill from "../components/Bills/PrintBill";
 const BillPage = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [showPrintModal, setShowPrintModal] = useState(false);
+  const [selectedBill, setSelectedBill] = useState(null);
 
-  const dataSource = [
-    {
-      key: "1",
-      name: "Mike",
-      age: 32,
-      address: "10 Downing Street",
-    },
-    {
-      key: "2",
-      name: "John",
-      age: 42,
-      address: "10 Downing Street",
-    },
-  ];
+  const {
+    data: bills,
+    error,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["bills"],
+    queryFn: getBills,
+  });
+
+  const printBill = (record) => {
+    setSelectedBill(record);
+    setShowPrintModal(true);
+  };
 
   const columns = [
     {
-      title: "Name",
-      dataIndex: "name",
-      key: "name",
+      title: "Müşteri Adı",
+      dataIndex: "customerName",
+      key: "customerName",
     },
     {
-      title: "Age",
-      dataIndex: "age",
-      key: "age",
+      title: "Telefon Numarası",
+      dataIndex: "customerPhoneNumber",
+      key: "customerPhoneNumber",
     },
     {
-      title: "Address",
-      dataIndex: "address",
-      key: "address",
+      title: "Oluşturulma Tarihi",
+      dataIndex: "createdAt",
+      key: "createdAt",
+      render: (text) => new Date(text).toLocaleDateString(),
+    },
+    {
+      title: "Ödeme Yöntemi",
+      dataIndex: "paymentMode",
+      key: "paymentMode",
+    },
+    {
+      title: "Toplam Fiyat",
+      dataIndex: "totalAmount",
+      key: "totalAmount",
+      render: (text) => <span>{text} ₺</span>,
+    },
+    {
+      title: "İşlemler",
+      key: "actions",
+      render: (text, record) => (
+        <Button type="link" size="small" onClick={() => printBill(record)}>
+          Yazdır
+        </Button>
+      ),
     },
   ];
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (isError) {
+    return <div>Error: {error.message}</div>;
+  }
+
+  const dataSource = bills.map((bill) => ({ ...bill, key: bill?._id }));
 
   return (
     <>
@@ -47,35 +80,17 @@ const BillPage = () => {
           columns={columns}
           bordered
           pagination={false}
+          scroll={{
+            x: 1000,
+            y: 300,
+          }}
         />
-        <div className=" flex justify-end mt-4">
-          <Card className="w-72 ">
-            <div className="flex justify-between">
-              <span>Ara Toplam</span>
-              <span>549.00₺</span>
-            </div>
-            <div className="flex justify-between my-2">
-              <span>Kdv Toplam %8</span>
-              <span className="text-red-600">549.00₺</span>
-            </div>
-            <div className="flex justify-between">
-              <b>Toplam</b>
-              <b>549.00₺</b>
-            </div>
-            <Button
-              onClick={() => {
-                setIsModalOpen(true);
-              }}
-              className="mt-2 w-full"
-              type="primary"
-              size="large"
-            >
-              Sipariş Oluştur
-            </Button>
-          </Card>
-        </div>
       </div>
-      <PrintBill isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />
+      <PrintBill
+        selectedBill={selectedBill}
+        showPrintModal={showPrintModal}
+        setShowPrintModal={setShowPrintModal}
+      />
     </>
   );
 };

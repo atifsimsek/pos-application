@@ -9,10 +9,12 @@ import {
   BarChartOutlined,
   LogoutOutlined,
 } from "@ant-design/icons";
+import { useSelector } from "react-redux";
 import useWindowWidth from "../../hooks/useWindowWitdh";
 import { Link, NavLink, useLocation } from "react-router-dom";
 
 const Header = () => {
+  const { cartItems } = useSelector((state) => state.cart);
   const [isMobile, setIsMobile] = useState(null);
   const { width } = useWindowWidth();
   const location = useLocation();
@@ -32,7 +34,7 @@ const Header = () => {
         name: "Sepet",
         to: "/cart",
         Icon: (
-          <Badge count={5} offset={[0, 6]}>
+          <Badge count={cartItems.length} offset={[0, 6]}>
             <ShoppingCartOutlined
               className={`${
                 location.pathname === "/cart" && "text-[#40a9ff]"
@@ -62,7 +64,7 @@ const Header = () => {
         Icon: <LogoutOutlined className="md:text-2xl text-xl text-red-600 " />,
       },
     ],
-    [location.pathname]
+    [location.pathname, cartItems.length]
   );
 
   useEffect(() => {
@@ -111,7 +113,7 @@ const Header = () => {
           )}
         </div>
         <NavLink to="/cart" className="md:hidden flex">
-          <Badge count={5} offset={[0, 6]}>
+          <Badge count={cartItems.length} offset={[0, 6]}>
             <ShoppingCartOutlined
               className={`${
                 location.pathname === "/cart" && "text-[#40a9ff]"

@@ -1,98 +1,75 @@
 import React from "react";
-import { useState, useEffect } from "react";
+import StatisticCard from "../components/Statistics/StatisticCard";
+import DoughnutChart from "../components/Statistics/DoughnutChart";
+import CustumAreaChart from "../components/Statistics/CustumAreaChart";
+import { getBills } from "../services/bills";
+import { useQuery } from "@tanstack/react-query";
+import { getProducts } from "../services/products";
 
 const Statistics = () => {
-  const [data, setData] = useState([]);
+  const {
+    data: bills,
+    error,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["bills"],
+    queryFn: getBills,
+  });
 
-  useEffect(() => {
-    asyncFetch();
-  }, []);
+  const {
+    data: products,
+    error: productError,
+    isLoading: productIsLoading,
+    isError: productIsError,
+  } = useQuery({
+    queryKey: ["products"],
+    queryFn: getProducts,
+  });
 
-  const asyncFetch = () => {
-    fetch(
-      "https://gw.alipayobjects.com/os/bmw-prod/360c3eae-0c73-46f0-a982-4746a6095010.json"
-    )
-      .then((response) => response.json())
-      .then((json) => setData(json))
-      .catch((error) => {
-        console.log("fetch data failed", error);
-      });
+  const totalAmount = () => {
+    if (!bills) return "0₺";
+    const amount = bills.reduce((total, item) => item.totalAmount + total, 0);
+    return `${amount.toFixed(2)}₺`;
   };
-
-  console.log(data, "Statistics");
-  // const config = {
-  //   data,
-  //   xField: "timePeriod",
-  //   yField: "value",
-  //   xAxis: {
-  //     range: [0, 1],
-  //   },
-  // };
-
-  // const data2 = [
-  //   {
-  //     type: "test",
-  //     value: 27,
-  //   },
-  //   {
-  //     type: "test1",
-  //     value: 25,
-  //   },
-  //   {
-  //     type: "test2",
-  //     value: 18,
-  //   },
-  //   {
-  //     type: "test3",
-  //     value: 15,
-  //   },
-  //   {
-  //     type: "test4",
-  //     value: 10,
-  //   },
-  //   {
-  //     type: "test5",
-  //     value: 5,
-  //   },
-  // ];
-
-  // const config2 = {
-  //   appendPadding: 10,
-  //   data: data2,
-  //   angleField: "value",
-  //   colorField: "type",
-  //   radius: 0.9,
-  //   label: {
-  //     type: "inner",
-  //     offset: "-30%",
-  //     content: ({ percent }) => `${(percent * 100).toFixed(0)}%`,
-  //     style: {
-  //       fontSize: 14,
-  //       textAlign: "center",
-  //     },
-  //   },
-  //   interactions: [
-  //     {
-  //       type: "element-active",
-  //     },
-  //   ],
-  // };
-
   return (
     <>
-      <div className="px-6 md:pb-0 pb-20">
+      <div className="px-6">
         <h1 className="text-4xl font-bold text-center mb-4">İstatistikler</h1>
-        <section className="statistics-section">
+        <section className="statistics-section lg:overflow-hidden overflow-y-scroll h-[70vh] md:h-[80vh] lg:h-[90vh]">
           <h2 className="text-lg">
             Hoş geldin{" "}
             <span className="text-green-700 font-bold text-xl">admin</span>
           </h2>
           <div className="statistic-cards grid xl:grid-cols-4 md:grid-col-2 my-10 gap-10">
-            Test
+            <StatisticCard
+              title={"Toplam Alışveriş"}
+              amount={bills?.length}
+              img={"images/user.png"}
+            />
+            <StatisticCard
+              title={"Toplam Kazanç"}
+              amount={totalAmount()}
+              img={"images/money.png"}
+            />
+            <StatisticCard
+              title={"Toplam Satış"}
+              amount={bills?.length}
+              img={"images/sale.png"}
+            />
+            <StatisticCard
+              title={"Toplam Ürün"}
+              amount={products?.length}
+              img={"images/product.png"}
+            />
           </div>
-          <div className="flex justify-between gap-10 lg:flex-row flex-col items-center">
-            <div className="lg:w-1/2 lg:h-full h-72">GRAFİK 1</div>
-            <div className="lg:w-1/2 lg:h-full h-72">GRAFİK 2</div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center ">
+            <div className=" flex items-center justify-center w-full lg:h-[50vh] h-auto ">
+              <CustumAreaChart bills={bills} />
+            </div>
+            <div className="  flex items-center justify-center w-full lg:h-[50vh] h-auto">
+              <DoughnutChart bills={bills} />
+            </div>
           </div>
         </section>
       </div>

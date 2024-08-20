@@ -1,15 +1,56 @@
-import { Button, Carousel, Checkbox, Form, Input } from "antd";
+import { Button, Carousel, Checkbox, Form, Input, message } from "antd";
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import AuthCarousel from "../../components/Auth/AuthCarousel";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { login } from "../../services/auth";
 
 const Login = () => {
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const addMutation = useMutation({
+    mutationFn: login,
+    onSuccess: (data) => {
+      console.log(data, "data");
+      localStorage.setItem(
+        "posUser",
+        JSON.stringify({
+          username: data?.username,
+          email: data?.email,
+        })
+      );
+      queryClient.invalidateQueries("login");
+      message.success("Giriş Başarılı");
+      navigate("/");
+    },
+    onError: (error) => {
+      if (error.response.status === 404) {
+        message.error("Kullanıcı Bulunamadı");
+      } else if (error.response.status === 403) {
+        message.error("Hatalı Şifre");
+      } else {
+        message.error("Giriş yaparken bir hata oluştu");
+      }
+    },
+  });
+
+  const onFinish = (values) => {
+    addMutation.mutate(values);
+  };
+
+  console.log(addMutation, "addMutation");
   return (
     <div className="h-screen">
       <div className="flex justify-between h-full">
         <div className="xl:pl-20  px-10 w-full relative flex flex-col h-full justify-center">
           <h1 className="text-center text-5xl font-bold mb-2 ">LOGO</h1>
-          <Form layout="vertical">
+          <Form
+            layout="vertical"
+            onFinish={onFinish}
+            initialValues={{
+              remember: false,
+            }}
+          >
             <Form.Item
               label="E-mail"
               name={"email"}
@@ -40,6 +81,7 @@ const Login = () => {
                 htmlType="submit"
                 className="w-full"
                 size="large"
+                loading={addMutation?.isPending}
               >
                 Giriş Yap
               </Button>

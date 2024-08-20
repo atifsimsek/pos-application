@@ -1,15 +1,38 @@
-import { Button, Carousel, Form, Input } from "antd";
 import React from "react";
-import { Link } from "react-router-dom";
+import { register } from "../../services/auth";
+import { Link, useNavigate } from "react-router-dom";
 import AuthCarousel from "../../components/Auth/AuthCarousel";
+import { Button, Carousel, Form, Input, message } from "antd";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 const Register = () => {
+  const [form] = Form.useForm();
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const addMutation = useMutation({
+    mutationFn: register,
+    onSuccess: () => {
+      queryClient.invalidateQueries("register");
+      message.success("Kayıt Başarılı");
+      navigate("/login");
+    },
+    onError: (error) => {
+      message.error("Kayıt olurken bir hata oluştu");
+      console.log(error);
+    },
+  });
+
+  const onFinish = (values) => {
+    addMutation.mutate(values);
+  };
+
+  console.log(addMutation, "addMutation", queryClient, "queryClient");
   return (
     <div className="h-screen">
       <div className="flex justify-between h-full">
         <div className="xl:pl-20  px-10 w-full relative flex flex-col h-full justify-center">
           <h1 className="text-center text-5xl font-bold mb-2 ">LOGO</h1>
-          <Form layout="vertical">
+          <Form form={form} layout="vertical" onFinish={onFinish}>
             <Form.Item
               label="Kullanıcı Adı"
               name={"username"}
@@ -66,6 +89,7 @@ const Register = () => {
                 htmlType="submit"
                 className="w-full"
                 size="large"
+                loading={addMutation?.isPending}
               >
                 Kaydol
               </Button>

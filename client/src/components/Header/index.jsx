@@ -11,13 +11,21 @@ import {
 } from "@ant-design/icons";
 import { useSelector } from "react-redux";
 import useWindowWidth from "../../hooks/useWindowWitdh";
-import { Link, NavLink, useLocation } from "react-router-dom";
+import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 
 const Header = () => {
   const { cartItems } = useSelector((state) => state.cart);
   const [isMobile, setIsMobile] = useState(null);
   const { width } = useWindowWidth();
   const location = useLocation();
+
+  const navigate = useNavigate();
+
+  const logOut = () => {
+    localStorage.removeItem("posUser");
+    navigate("/login");
+    console.log("logout");
+  };
 
   const windowWidth = useMemo(() => {
     if (width <= 768) return width;
@@ -60,8 +68,9 @@ const Header = () => {
       },
       {
         name: "Çıkış Yap",
-        to: "/logout",
         Icon: <LogoutOutlined className="md:text-2xl text-xl text-red-600 " />,
+        to: "/login",
+        onClick: logOut,
       },
     ],
     [location.pathname, cartItems.length]
@@ -97,8 +106,9 @@ const Header = () => {
           {menuLinks.map((link, index) =>
             isMobile === index ? null : (
               <NavLink
+                onClick={link?.onClick}
                 key={index}
-                to={link.to}
+                to={link?.to}
                 className={({ isActive }) =>
                   ` menu-link flex justify-center items-center flex-col hover:text-[#40a9ff] transition-all ${
                     isActive && "text-[#40a9ff]"

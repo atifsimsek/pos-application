@@ -1,5 +1,7 @@
 import React, { lazy, Suspense } from "react";
+import { Navigate } from "react-router-dom";
 import ProductPage from "./pages/ProductPage";
+
 const Homepage = lazy(() => import("./pages/Homepage"));
 const CartPage = lazy(() => import("./pages/CartPage"));
 const BillPage = lazy(() => import("./pages/BillPage"));
@@ -8,15 +10,31 @@ const Statistics = lazy(() => import("./pages/Statistics"));
 const Register = lazy(() => import("./pages/auth/Register"));
 const Login = lazy(() => import("./pages/auth/Login"));
 
+const isAuthenticated = () => {
+  return !!localStorage.getItem("posUser");
+};
+
+const PublicRoute = ({ element }) => {
+  return isAuthenticated() ? <Navigate to="/" /> : element;
+};
+
+const PrivateRoute = ({ element }) => {
+  return isAuthenticated() ? element : <Navigate to="/login" />;
+};
+
 export const routes = [
   {
     path: "/",
     name: "Home",
     exact: true,
     element: (
-      <Suspense fallback={<div>Loading...</div>}>
-        <Homepage />
-      </Suspense>
+      <PrivateRoute
+        element={
+          <Suspense fallback={<div>Loading...</div>}>
+            <Homepage />
+          </Suspense>
+        }
+      />
     ),
   },
   {
@@ -24,19 +42,27 @@ export const routes = [
     name: "Cart",
     exact: true,
     element: (
-      <Suspense fallback={<div>Loading...</div>}>
-        <CartPage />
-      </Suspense>
+      <PrivateRoute
+        element={
+          <Suspense fallback={<div>Loading...</div>}>
+            <CartPage />
+          </Suspense>
+        }
+      />
     ),
   },
   {
     path: "/product",
-    name: "product",
+    name: "Product",
     exact: true,
     element: (
-      <Suspense fallback={<div>Loading...</div>}>
-        <ProductPage />
-      </Suspense>
+      <PrivateRoute
+        element={
+          <Suspense fallback={<div>Loading...</div>}>
+            <ProductPage />
+          </Suspense>
+        }
+      />
     ),
   },
   {
@@ -44,9 +70,13 @@ export const routes = [
     name: "Bill",
     exact: true,
     element: (
-      <Suspense fallback={<div>Loading...</div>}>
-        <BillPage />
-      </Suspense>
+      <PrivateRoute
+        element={
+          <Suspense fallback={<div>Loading...</div>}>
+            <BillPage />
+          </Suspense>
+        }
+      />
     ),
   },
   {
@@ -54,39 +84,55 @@ export const routes = [
     name: "Customer",
     exact: true,
     element: (
-      <Suspense fallback={<div>Loading...</div>}>
-        <CustomerPage />
-      </Suspense>
+      <PrivateRoute
+        element={
+          <Suspense fallback={<div>Loading...</div>}>
+            <CustomerPage />
+          </Suspense>
+        }
+      />
     ),
   },
   {
     path: "/statistics",
-    name: "statistics",
+    name: "Statistics",
     exact: true,
     element: (
-      <Suspense fallback={<div>Loading...</div>}>
-        <Statistics />
-      </Suspense>
+      <PrivateRoute
+        element={
+          <Suspense fallback={<div>Loading...</div>}>
+            <Statistics />
+          </Suspense>
+        }
+      />
     ),
   },
   {
     path: "/register",
-    name: "register",
+    name: "Register",
     exact: true,
     element: (
-      <Suspense fallback={<div>Loading...</div>}>
-        <Register />
-      </Suspense>
+      <PublicRoute
+        element={
+          <Suspense fallback={<div>Loading...</div>}>
+            <Register />
+          </Suspense>
+        }
+      />
     ),
   },
   {
     path: "/login",
-    name: "login",
+    name: "Login",
     exact: true,
     element: (
-      <Suspense fallback={<div>Loading...</div>}>
-        <Login />
-      </Suspense>
+      <PublicRoute
+        element={
+          <Suspense fallback={<div>Loading...</div>}>
+            <Login />
+          </Suspense>
+        }
+      />
     ),
   },
 ];

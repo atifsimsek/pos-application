@@ -106,17 +106,17 @@ const Login = () => {
                 />
                 <AuthCarousel
                   img={"images/statistic.svg"}
-                  title={"Responsive"}
+                  title={"Grafikler"}
                   desc={"Geniş Tutulan İstatistikler"}
                 />
                 <AuthCarousel
                   img={"images/customer.svg"}
-                  title={"Responsive"}
-                  desc={"Ürün Memnuniyeti"}
+                  title={"Müşteri Memnuniyeti"}
+                  desc={"Deneyim Sonunda Üründen Memnun Müşteriler"}
                 />
                 <AuthCarousel
                   img={"images/admin.svg"}
-                  title={"Responsive"}
+                  title={"Yönetici Paneli"}
                   desc={"Tek Alandan Yönetim"}
                 />
               </Carousel>

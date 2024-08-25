@@ -1,6 +1,7 @@
 import React, { lazy, Suspense } from "react";
 import { Navigate } from "react-router-dom";
 import ProductPage from "./pages/ProductPage";
+import Loader from "./components/Loader";
 
 const Homepage = lazy(() => import("./pages/Homepage"));
 const CartPage = lazy(() => import("./pages/CartPage"));
@@ -22,6 +23,10 @@ const PrivateRoute = ({ element }) => {
   return isAuthenticated() ? element : <Navigate to="/login" />;
 };
 
+const SuspenseWrapper = ({ children }) => {
+  return <Suspense fallback={<Loader />}>{children}</Suspense>;
+};
+
 export const routes = [
   {
     path: "/",
@@ -30,9 +35,9 @@ export const routes = [
     element: (
       <PrivateRoute
         element={
-          <Suspense fallback={<div>Loading...</div>}>
+          <SuspenseWrapper>
             <Homepage />
-          </Suspense>
+          </SuspenseWrapper>
         }
       />
     ),
@@ -44,9 +49,9 @@ export const routes = [
     element: (
       <PrivateRoute
         element={
-          <Suspense fallback={<div>Loading...</div>}>
+          <SuspenseWrapper>
             <CartPage />
-          </Suspense>
+          </SuspenseWrapper>
         }
       />
     ),
@@ -58,9 +63,9 @@ export const routes = [
     element: (
       <PrivateRoute
         element={
-          <Suspense fallback={<div>Loading...</div>}>
+          <SuspenseWrapper>
             <ProductPage />
-          </Suspense>
+          </SuspenseWrapper>
         }
       />
     ),
@@ -72,9 +77,9 @@ export const routes = [
     element: (
       <PrivateRoute
         element={
-          <Suspense fallback={<div>Loading...</div>}>
+          <SuspenseWrapper>
             <BillPage />
-          </Suspense>
+          </SuspenseWrapper>
         }
       />
     ),
@@ -86,9 +91,9 @@ export const routes = [
     element: (
       <PrivateRoute
         element={
-          <Suspense fallback={<div>Loading...</div>}>
+          <SuspenseWrapper>
             <CustomerPage />
-          </Suspense>
+          </SuspenseWrapper>
         }
       />
     ),
@@ -100,9 +105,9 @@ export const routes = [
     element: (
       <PrivateRoute
         element={
-          <Suspense fallback={<div>Loading...</div>}>
+          <SuspenseWrapper>
             <Statistics />
-          </Suspense>
+          </SuspenseWrapper>
         }
       />
     ),
@@ -114,9 +119,9 @@ export const routes = [
     element: (
       <PublicRoute
         element={
-          <Suspense fallback={<div>Loading...</div>}>
+          <SuspenseWrapper>
             <Register />
-          </Suspense>
+          </SuspenseWrapper>
         }
       />
     ),
@@ -128,9 +133,9 @@ export const routes = [
     element: (
       <PublicRoute
         element={
-          <Suspense fallback={<div>Loading...</div>}>
+          <SuspenseWrapper>
             <Login />
-          </Suspense>
+          </SuspenseWrapper>
         }
       />
     ),

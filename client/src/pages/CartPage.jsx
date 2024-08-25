@@ -6,11 +6,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { PlusCircleOutlined, MinusCircleOutlined } from "@ant-design/icons";
 import { decraseProduct, incraseProduct } from "../redux/cartSlice";
 import { deleteProduct } from "../services/products";
+import useTableFilter from "../hooks/useTableFilter";
 
 const CartPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { cartItems, total, tax } = useSelector((state) => state.cart);
   const dispatch = useDispatch();
+
+  const { getColumnSearchProps } = useTableFilter();
 
   const columns = [
     {
@@ -26,16 +29,20 @@ const CartPage = () => {
       title: "Ürün Adı",
       dataIndex: "title",
       key: "title",
+      ...getColumnSearchProps("title"),
     },
     {
       title: "Kategori",
       dataIndex: "category",
       key: "category",
+      ...getColumnSearchProps("category"),
     },
     {
       title: "Ürün Adedi",
       dataIndex: "quantity",
       key: "quantity",
+      sorter: (a, b) => a.quantity - b.quantity,
+      showSorterTooltip: false,
       render: (_, product) => {
         return (
           <div className="flex items-center gap-1">
@@ -80,6 +87,8 @@ const CartPage = () => {
       dataIndex: "price",
       key: "price",
       render: (text, product) => (product.price * product.quantity).toFixed(2),
+      sorter: (a, b) => a.price - b.price,
+      showSorterTooltip: false,
     },
     {
       title: "İşlem",
@@ -99,21 +108,28 @@ const CartPage = () => {
       ),
     },
   ];
+  const cardHeight = 330;
 
   return (
     <>
-      <div className="px-6">
+      <div className="px-0 md:px-6">
         <Table
+          rowKey={"_id"}
           dataSource={cartItems}
           columns={columns}
           bordered
           pagination={false}
+          scroll={{
+            x: 1000,
+            y: `calc(100vh - ${cardHeight}px - 40px)`,
+          }}
+          className="h-full"
         />
-        <div className=" flex justify-end mt-4">
-          <Card className="w-72 ">
+        <div className="mt-4 flex justify-end">
+          <Card className={`w-72 h-[${cardHeight}px]`}>
             <div className="flex justify-between">
               <span>Ara Toplam</span>
-              <span>{total}₺</span>
+              <span>{total === 0 ? "0" : total.toFixed(2)}₺</span>
             </div>
             <div className="flex justify-between my-2">
               <span>Kdv %{tax}</span>
@@ -140,8 +156,8 @@ const CartPage = () => {
             </Button>
           </Card>
         </div>
+        <CreateBill isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />
       </div>
-      <CreateBill isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />
     </>
   );
 };

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Badge, Input } from "antd";
 import {
   SearchOutlined,
@@ -9,23 +9,24 @@ import {
   BarChartOutlined,
   LogoutOutlined,
 } from "@ant-design/icons";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import useWindowWidth from "../../hooks/useWindowWitdh";
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
+import { setSearch } from "../../redux/cartSlice";
 
 const Header = () => {
   const { cartItems } = useSelector((state) => state.cart);
   const [isMobile, setIsMobile] = useState(null);
   const { width } = useWindowWidth();
   const location = useLocation();
+  const dispatch = useDispatch();
 
   const navigate = useNavigate();
 
-  const logOut = () => {
+  const logOut = useCallback(() => {
     localStorage.removeItem("posUser");
     navigate("/login");
-    console.log("logout");
-  };
+  }, [navigate]);
 
   const windowWidth = useMemo(() => {
     if (width <= 768) return width;
@@ -73,7 +74,7 @@ const Header = () => {
         onClick: logOut,
       },
     ],
-    [location.pathname, cartItems.length]
+    [location.pathname, cartItems.length, logOut]
   );
 
   useEffect(() => {
@@ -84,7 +85,7 @@ const Header = () => {
     }
   }, [windowWidth]);
   return (
-    <div className="header-wrapper border-b mb-6">
+    <div className="header-wrapper border-b mb-2 md:mb-6 sticky top-0 z-50 bg-white">
       <header className="py-4 px-6 flex justify-between items-center gap-10">
         <div className="logo">
           <Link to="/">
@@ -97,6 +98,8 @@ const Header = () => {
             size="large"
             placeholder="Search"
             prefix={<SearchOutlined />}
+            onChange={(e) => dispatch(setSearch(e.target.value.toLowerCase()))}
+            onClick={() => location.pathname !== "/" && navigate("/")}
           />
         </div>
         <div
@@ -114,7 +117,6 @@ const Header = () => {
                     isActive && "text-[#40a9ff]"
                   }`
                 }
-                //className={`()=> menu-link flex flex-col hover:text-[#40a9ff] transition-all`}
               >
                 {link.Icon}
                 <span className="md:text-[12px] text-[10px]">{link.name}</span>

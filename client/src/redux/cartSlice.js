@@ -3,9 +3,10 @@ import { createSlice } from "@reduxjs/toolkit";
 const cartSlice = createSlice({
   name: "cart",
   initialState: {
-    cartItems: [],
-    total: 0,
+    cartItems: JSON.parse(localStorage.getItem("cart"))?.cartItems || [],
+    total: JSON.parse(localStorage.getItem("cart"))?.total || 0,
     tax: 18,
+    search: "",
   },
   reducers: {
     addProduct: (state, action) => {
@@ -52,9 +53,17 @@ const cartSlice = createSlice({
       state.cartItems = [];
       state.total = 0;
     },
+    setSearch: (state, action) => {
+      state.search = action.payload;
+    },
   },
 });
 
-export const { addProduct, decraseProduct, incraseProduct, clearCart } =
-  cartSlice.actions;
+export const {
+  addProduct,
+  decraseProduct,
+  incraseProduct,
+  clearCart,
+  setSearch,
+} = cartSlice.actions;
 export default cartSlice.reducer;

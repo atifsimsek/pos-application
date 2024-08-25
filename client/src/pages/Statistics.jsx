@@ -5,11 +5,11 @@ import CustumAreaChart from "../components/Statistics/CustumAreaChart";
 import { getBills } from "../services/bills";
 import { useQuery } from "@tanstack/react-query";
 import { getProducts } from "../services/products";
+import Loader from "../components/Loader";
 
 const Statistics = () => {
   const {
     data: bills,
-    error,
     isLoading,
     isError,
   } = useQuery({
@@ -19,7 +19,6 @@ const Statistics = () => {
 
   const {
     data: products,
-    error: productError,
     isLoading: productIsLoading,
     isError: productIsError,
   } = useQuery({
@@ -32,11 +31,18 @@ const Statistics = () => {
     const amount = bills.reduce((total, item) => item.totalAmount + total, 0);
     return `${amount.toFixed(2)}₺`;
   };
+  if (isLoading || productIsLoading) {
+    return <Loader />;
+  }
+
+  if (isError || productIsError) {
+    return <div>Error loading data.</div>;
+  }
   return (
     <>
       <div className="px-6">
         <h1 className="text-4xl font-bold text-center mb-4">İstatistikler</h1>
-        <section className="statistics-section lg:overflow-hidden overflow-y-scroll h-[70vh] md:h-[80vh] lg:h-[90vh]">
+        <section className="statistics-section overflow-hidden md:overflow-y-scroll mb-16 md:mb-0">
           <h2 className="text-lg">
             Hoş geldin{" "}
             <span className="text-green-700 font-bold text-xl">admin</span>

@@ -6,7 +6,6 @@
 
 body {
   font-family: "Poppins", sans-serif;
-  overflow: hidden;
 }
 
 .ant-btn-primary {
@@ -19,5 +18,11 @@ body {
 @media (min-width: 768px) {
   .categories::-webkit-scrollbar {
     display: none;
+  }
+}
+
+@media (max-width: 767px) {
+  .body {
+    overflow: auto;
   }
 }

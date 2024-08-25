@@ -6,6 +6,7 @@ import { deleteCategory, updateCategory } from "../../services/categories";
 const Edit = ({ categories, editModalOpen, setEditModalOpen }) => {
   const [editingRow, setEditingRow] = useState(null);
   const [inputValue, setInputValue] = useState("");
+  const [form] = Form.useForm();
   const queryClient = useQueryClient();
 
   const updateMutation = useMutation({
@@ -46,6 +47,7 @@ const Edit = ({ categories, editModalOpen, setEditModalOpen }) => {
 
   const onFinish = () => {
     updateMutation.mutate({ categoryId: editingRow._id, title: inputValue });
+    form.resetFields();
   };
 
   const columns = [
@@ -104,7 +106,7 @@ const Edit = ({ categories, editModalOpen, setEditModalOpen }) => {
   ];
   return (
     <Modal
-      title="Yeni Kategori Ekle"
+      title="Kategori Düzenle"
       open={editModalOpen}
       onOk={handleOk}
       onCancel={handleCancel}

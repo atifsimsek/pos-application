@@ -8,6 +8,7 @@ import {
   updateProduct,
 } from "../../services/products";
 import { getProductColums } from "./getProductColums";
+import Loader from "../Loader";
 
 const Edit = () => {
   const [form] = Form.useForm();
@@ -21,7 +22,7 @@ const Edit = () => {
   });
 
   const {
-    data:products,
+    data: products,
     error: productError,
     isLoading: productIsLoading,
     isError: productIsError,
@@ -76,7 +77,7 @@ const Edit = () => {
   );
 
   if (productIsLoading) {
-    return <div>Loading...</div>;
+    return <Loader />;
   }
 
   if (productIsError) {
@@ -91,7 +92,7 @@ const Edit = () => {
         rowKey={"_id"}
         scroll={{
           x: 1000,
-          y: 600,
+          y: 550,
         }}
       />
       <Modal

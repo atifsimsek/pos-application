@@ -3,9 +3,13 @@ import { Table, Button } from "antd";
 import { useQuery } from "@tanstack/react-query";
 import { getBills } from "../services/bills";
 import PrintBill from "../components/Bills/PrintBill";
+import useTableFilter from "../hooks/useTableFilter";
+import Loader from "../components/Loader";
 const BillPage = () => {
   const [showPrintModal, setShowPrintModal] = useState(false);
   const [selectedBill, setSelectedBill] = useState(null);
+
+  const { getColumnSearchProps } = useTableFilter();
 
   const {
     data: bills,
@@ -27,28 +31,35 @@ const BillPage = () => {
       title: "Müşteri Adı",
       dataIndex: "customerName",
       key: "customerName",
+      ...getColumnSearchProps("customerName"),
     },
     {
       title: "Telefon Numarası",
       dataIndex: "customerPhoneNumber",
       key: "customerPhoneNumber",
+      ...getColumnSearchProps("customerPhoneNumber"),
     },
     {
       title: "Oluşturulma Tarihi",
       dataIndex: "createdAt",
       key: "createdAt",
       render: (text) => new Date(text).toLocaleDateString(),
+      sorter: (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
+      showSorterTooltip: false,
     },
     {
       title: "Ödeme Yöntemi",
       dataIndex: "paymentMode",
       key: "paymentMode",
+      ...getColumnSearchProps("paymentMode"),
     },
     {
       title: "Toplam Fiyat",
       dataIndex: "totalAmount",
       key: "totalAmount",
       render: (text) => <span>{text} ₺</span>,
+      sorter: (a, b) => a.totalAmount - b.totalAmount,
+      showSorterTooltip: false,
     },
     {
       title: "İşlemler",
@@ -62,7 +73,7 @@ const BillPage = () => {
   ];
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <Loader />;
   }
 
   if (isError) {
@@ -76,6 +87,7 @@ const BillPage = () => {
       <div className="px-6">
         <h1 className="text-4xl font-bold text-center mb-4">Faturalar</h1>
         <Table
+          rowKey={"_id"}
           dataSource={dataSource}
           columns={columns}
           bordered

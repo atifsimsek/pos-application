@@ -86,15 +86,19 @@ const CreateBill = ({ isModalOpen, setIsModalOpen }) => {
           <Card className="w-full">
             <div className="flex justify-between">
               <span>Ara Toplam</span>
-              <span>549.00₺</span>
+              <span>{total === 0 ? "0" : total.toFixed(2)}₺</span>
             </div>
             <div className="flex justify-between my-2">
-              <span>Kdv Toplam %8</span>
-              <span className="text-red-600">549.00₺</span>
+              <span>Kdv %{tax}</span>
+              <span className="text-red-600">
+                {total === 0 ? "0" : ((total * tax) / 100).toFixed(2)}₺
+              </span>
             </div>
             <div className="flex justify-between">
               <b>Toplam</b>
-              <b>549.00₺</b>
+              <b>
+                {total === 0 ? "0" : (total + (total * tax) / 100).toFixed(2)}₺
+              </b>
             </div>
             <div className="flex justify-end">
               <Button

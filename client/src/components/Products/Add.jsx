@@ -25,6 +25,7 @@ const Add = ({ addModalOpen, setAddModalOpen, categories }) => {
 
   const onFinish = (values) => {
     addMutation.mutate(values);
+    form.resetFields();
   };
 
   return (

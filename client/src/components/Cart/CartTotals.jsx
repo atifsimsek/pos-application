@@ -48,7 +48,7 @@ const CartTotals = () => {
       <h2 className="bg-blue-600 text-center py-4 text-white font-bold tracking-wide flex flex-col">
         Sepetteki Ürünler
       </h2>
-      <ul className="cart-items px-2 flex flex-col gap-y-3 overflow-y-auto">
+      <ul className="cart-items px-2 flex flex-col gap-y-3 overflow-y-auto  md:min-h-0">
         {cartItems &&
           cartItems.map((product) => (
             <li key={product._id} className="cart-item flex justify-between">
@@ -127,7 +127,7 @@ const CartTotals = () => {
               disabled={total === 0 ? true : false}
               onClick={() => navigate("/cart")}
             >
-              Create Order
+              Sipariş Oluştur
             </Button>
             <Button
               type="primary"
@@ -138,7 +138,7 @@ const CartTotals = () => {
               icon={<ClearOutlined />}
               onClick={handleClearCart}
             >
-              Clear Cart
+              Sepeti Temizle
             </Button>
           </div>
         </div>

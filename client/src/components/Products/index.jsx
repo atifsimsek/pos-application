@@ -3,40 +3,26 @@ import ProductItem from "./ProductItem";
 import { PlusOutlined, EditOutlined } from "@ant-design/icons";
 import Add from "./Add";
 import { useNavigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import { getProducts } from "../../services/products";
+import { useSelector } from "react-redux";
 
-const Products = ({ categories }) => {
+const Products = ({ categories, products }) => {
   const [addModalOpen, setAddModalOpen] = useState(false);
+  const { search } = useSelector((state) => state.cart);
   const navigate = useNavigate();
 
-  const {
-    data: products,
-    error,
-    isLoading,
-    isError,
-  } = useQuery({
-    queryKey: ["products"],
-    queryFn: getProducts,
-  });
+  const filtredProducts = products.filter((product) =>
+    product?.title?.toLowerCase()?.includes(search)
+  );
 
   const showAddModal = () => {
     setAddModalOpen(true);
   };
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
-  if (isError) {
-    return <div>Error: {error.message}</div>;
-  }
-
   return (
     <>
       <div className="product-wrapper grid gap-4 grid-cols-card">
-        {products.map((product) => (
-          <ProductItem product={product} key={product._id} />
+        {filtredProducts.map((product) => (
+          <ProductItem product={product} key={product?._id} />
         ))}
         <div
           onClick={showAddModal}
